@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Domain.Interfaces.Repositories
 {
-    public interface IRepositoryBase<T> where T : EntityBase
+    public interface IRepositoryBase<T> where T : EntityBase<T>
     {
         IEnumerable<T> GetAll();
         T? GetById(int id);

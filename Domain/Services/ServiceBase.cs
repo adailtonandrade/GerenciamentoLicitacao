@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace Domain.Services
 {
-    public class ServiceBase<T> : IServiceBase<T> where T : EntityBase
+    public class ServiceBase<T> : IServiceBase<T> where T : EntityBase<T>
     {
         private readonly IRepositoryBase<T> _baseRepository;
         private readonly IMapper _mapper;
