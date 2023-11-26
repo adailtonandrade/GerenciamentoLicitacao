@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Domain.Interfaces.Service
 {
-    public interface IServiceBase<T> where T : EntityBase
+    public interface IServiceBase<T> where T : EntityBase<T>
     {
         TOutputModel Add<TInputModel, TOutputModel, TValidator>(TInputModel inputModel)
         where TValidator : AbstractValidator<T>

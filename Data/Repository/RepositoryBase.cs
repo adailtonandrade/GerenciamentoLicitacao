@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace Data.Repository
 {
-    public class RepositoryBase<T> : IRepositoryBase<T> where T : EntityBase
+    public class RepositoryBase<T> : IRepositoryBase<T> where T : EntityBase<T>
     {
         private ModelContext _context;
         protected DbSet<T> _dbSet;
