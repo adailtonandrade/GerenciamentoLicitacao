@@ -18,8 +18,7 @@ namespace CrossCutting.IoC
         public static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
             #region Universal
-            services.AddDbContext<ModelContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ModelContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             #endregion
 
