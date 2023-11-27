@@ -1,7 +1,6 @@
 ﻿using Domain.Enums;
 using Domain.Validators;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Application.ViewModels
 {

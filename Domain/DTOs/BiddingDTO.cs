@@ -26,5 +26,7 @@ namespace Domain.DTOs
         [JsonPropertyName("Status")]
         [JsonConverter(typeof(CustomStringEnumConverter))]
         public BiddingStatusEnum Status { get; set; }
+        
+        public bool IsActive { get; set; }
     }
 }
