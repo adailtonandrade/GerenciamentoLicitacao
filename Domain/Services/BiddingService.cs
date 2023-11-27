@@ -3,7 +3,6 @@ using Domain.DTOs;
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Service;
-using System.Linq.Expressions;
 
 namespace Domain.Services
 {
@@ -30,18 +29,8 @@ namespace Domain.Services
         public override List<string> Validate(Bidding bidding)
         {
             if (!IsUniqueField(nameof(bidding.Number), bidding.Number, bidding.Id))
-                _errors.Add("O CPF já esta em uso para outro talento");
+                _errors.Add("O Número informado já esta em uso para outra licitação");
             return _errors;
         }
-        //private static Expression<Func<Bidding, object>> GetOrderForBidding(string? orderProperty)
-        //{
-        //    orderProperty = orderProperty?.ToLowerInvariant();
-        //    return orderProperty switch
-        //    {
-        //        "number" => bidding => bidding.Number,
-        //        "openingdate" => bidding => bidding.OpeningDate,
-        //        _ => user => user.Number,
-        //    };
-        //}
     }
 }

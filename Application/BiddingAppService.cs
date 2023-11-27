@@ -92,9 +92,9 @@ namespace Application
             throw new NotImplementedException();
         }
 
-        public BiddingCreateVM GetById(int id)
+        public BiddingEditVM GetById(int id)
         {
-            throw new NotImplementedException();
+            return _mapper.Map<BiddingEditVM>(_biddingService.GetById(id));
         }
 
         public (int total, IEnumerable<BiddingDTO>) GetPaginated(BiddingPaginatedDTO biddingPaginated)
@@ -111,7 +111,7 @@ namespace Application
                 _errors = _biddingService.Validate(biddingEntity);
                 if (_errors?.Count == 0)
                 {
-                    biddingEntity.OpeningDate = DateTime.Now;
+                    biddingEntity.OpeningDate = DateOnly.FromDateTime(DateTime.Now);
                     biddingEntity.Status = BiddingStatusEnum.Opened;
                     BeginTransaction();
                     _biddingService.Add(biddingEntity);
@@ -127,9 +127,27 @@ namespace Application
             return _errors ?? [];
         }
 
-        public List<string> Update(BiddingCreateVM obj)
+        public List<string> Update(BiddingEditVM obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Bidding bidding = _mapper.Map<BiddingEditVM, Bidding>(obj);
+                bidding.IsActive = Convert.ToBoolean((int)GenericStatusEnum.Active);
+                _errors = _biddingService.Validate(bidding);
+                if (_errors?.Count == 0)
+                {
+                    BeginTransaction();
+                    _biddingService.Update(bidding);
+                    SaveChanges();
+                    Commit();
+                }
+            }
+            catch (Exception e)
+            {
+                _errors.Add("Erro: " + e.Message.ToString() + "\nInner Exception: " + e.InnerException.Message.ToString());
+                Rollback();
+            }
+            return _errors ?? [];
         }
     }
 }

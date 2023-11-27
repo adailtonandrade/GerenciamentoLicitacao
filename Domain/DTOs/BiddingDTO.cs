@@ -1,6 +1,7 @@
 ﻿using Domain.Enums;
 using Domain.Util;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Domain.DTOs
@@ -18,7 +19,8 @@ namespace Domain.DTOs
 
         [DisplayName("Data de Abertura")]
         [JsonPropertyName("OpeningDate")]
-        public DateTime OpeningDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateOnly OpeningDate { get; set; }
 
         [DisplayName("Status")]
         [JsonPropertyName("Status")]
