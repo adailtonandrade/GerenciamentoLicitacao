@@ -10,6 +10,7 @@ namespace Application.Mapper
         public MappingProfile()
         {
             CreateMap<BiddingCreateVM, Bidding>().ReverseMap();
+            CreateMap<BiddingEditVM, Bidding>().ReverseMap();
             CreateMap<BiddingDTO, Bidding>().ReverseMap();
         }
     }

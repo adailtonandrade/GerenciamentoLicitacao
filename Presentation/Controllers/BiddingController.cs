@@ -4,6 +4,8 @@ using Domain.DTOs;
 using Domain.Util;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
+using NuGet.Protocol;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Presentation.Controllers
 {
@@ -65,24 +67,33 @@ namespace Presentation.Controllers
         }
 
         // GET: BiddingController/Edit/5
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Edit(int id)
         {
-            return View();
+            var biddingToEdit = _biddingAppService.GetById(id);
+            if (biddingToEdit == null)
+                return new RedirectToRouteResult(new RouteValueDictionary(new { action = "NotFound", controller = "Error" }));
+
+            return View(biddingToEdit);
         }
 
         // POST: BiddingController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(BiddingEditVM biddingEdited)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(biddingEdited);
             }
-            catch
+            _errors = _biddingAppService.Update(biddingEdited);
+            if (_errors.Count == 0)
             {
-                return View();
+                _toastNotification.AddSuccessToastMessage("Licitação alterada com sucesso", new ToastrOptions() { TimeOut = 10000 });
+                return RedirectToAction("Index");
             }
+            ModelStateMessage.AddModelStateError(_errors, string.Empty, ModelState);
+            return View(biddingEdited);
         }
 
         // GET: BiddingController/Delete/5

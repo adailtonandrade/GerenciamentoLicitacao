@@ -27,6 +27,7 @@
                 <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.Description)" data-searchable="true" data-sortable="true">@Html.DisplayNameFor(model => model.Description)</th>
                 <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.OpeningDate)" data-sortable="true" data-formatter="dateFormatter">@Html.DisplayNameFor(model => model.OpeningDate)</th>
                 <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.Status)" data-sortable="true">@Html.DisplayNameFor(model => model.Status)</th>
+                <th data-halign="center" data-formatter="operateFormatter">Ação</th>
             </tr>
         </thead>
     </table>
@@ -50,15 +51,16 @@
 
         function dateFormatter(value, row) {
             const dateString = value;
-            const date = new Date(dateString);
 
-            const dateFormated = date.toLocaleDateString('pt-BR');
-            const timeFormated = date.toLocaleTimeString('pt-BR');
-            const dateTimeFormated = `${dateFormated} - ${timeFormated}`
-            console.log(dateTimeFormated)
-            return dateTimeFormated
+            const dateParts = dateString.split("-");
+            const formatedDate = dateParts.reverse().join("/");
+            return formatedDate
         }
-
+        function operateFormatter(value, row, index) {
+            var operations = '<p class="text-center"><a class="edit btn col-md-4 btn-primary" href="Bidding/Edit/?id=' + row.id + '" title="Editar">Editar</a>  ' +
+                '<a class="delete btn btn-danger col-md-4" href="javascript:void(0)" title="Desativar">Desativar</a></p>'
+            return operations
+        }
         function cellStyle(value, row, index) {
             return {
                 classes: 'text-center'
