@@ -27,13 +27,12 @@ namespace Application
             try
             {
                 if (bidding != null)
-                {
                     if (bidding.IsActive.Equals(Convert.ToBoolean((int)GenericStatusEnum.Inactive)))
                         _errors = Reactivate(bidding);
                     else
                         _errors = Deactivate(bidding);
-                }
-                throw new NullReferenceException();
+                else
+                    _errors.Add(String.Format("A Licitação de Id {0} não pode ser desativada pois não foi encontrada na base de dados", id));
             }
             catch (Exception e)
             {
@@ -49,17 +48,11 @@ namespace Application
         {
             try
             {
-                var users = _biddingService.Get(t => t.Id == bidding.Id);
-                if (users == null || users.Count() == 0)
-                {
-                    BeginTransaction();
-                    bidding.IsActive = Convert.ToBoolean(((int)GenericStatusEnum.Inactive));
-                    _biddingService.Update(bidding);
-                    SaveChanges();
-                    Commit();
-                }
-                else
-                    _errors.Add(String.Format("A Licitação de Número {0} não pode ser desativada pois não foi encontrada na base de dados", bidding.Number));
+                BeginTransaction();
+                bidding.IsActive = Convert.ToBoolean(((int)GenericStatusEnum.Inactive));
+                _biddingService.Update(bidding);
+                SaveChanges();
+                Commit();
             }
             catch (Exception e)
             {

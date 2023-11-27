@@ -4,8 +4,7 @@ using Domain.DTOs;
 using Domain.Util;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
-using NuGet.Protocol;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Net;
 
 namespace Presentation.Controllers
 {
@@ -96,25 +95,53 @@ namespace Presentation.Controllers
             return View(biddingEdited);
         }
 
-        // GET: BiddingController/Delete/5
-        public ActionResult Delete(int id)
+        private ActionResult Delete(int id, string successMessage, string RollbackMethod)
         {
-            return View();
+            object response;
+            if (id > 0)
+            {
+                _errors.AddRange(_biddingAppService.Delete(id));
+                if (_errors?.Count > 0)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    return Json(new { Message = _errors[0] });
+                }
+                else
+                {
+                    response = new
+                    {
+                        Message = successMessage,
+                        ButtonLabels = new
+                        {
+                            Reactivate = "Reativar",
+                            Deactivate = "Desativar",
+                            RollbackMethod = RollbackMethod,
+                            Url = Url.RouteUrl("Default", new { controller = "Bidding", action = RollbackMethod, Id = id })
+                        }
+                    };
+                    Response.StatusCode = (int)HttpStatusCode.OK;
+                    return Json(response);
+                }
+            }
+            else
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { message = "O Id informado é inválido" });
+            }
         }
 
-        // POST: BiddingController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Deactivate(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            string successMessage = "Licitação desativada com sucesso!";
+            return Delete(id, successMessage, "Reactivate");
+        }
+
+        [HttpPost]
+        public ActionResult Reactivate(int id)
+        {
+            string successMessage = "Licitação reativada com sucesso";
+            return Delete(id, successMessage, "Deactivate");
         }
     }
 }

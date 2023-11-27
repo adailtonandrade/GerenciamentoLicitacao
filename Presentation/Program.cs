@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using Presentation.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-}).AddNToastNotifyToastr();
+builder.Services.AddControllersWithViews().AddNToastNotifyToastr();
 builder.Services.AddRazorPages();
 builder.Services.AddDependencyInjectionConfiguration(builder.Configuration);
 

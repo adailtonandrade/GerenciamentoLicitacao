@@ -27,7 +27,7 @@
                 <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.Description)" data-searchable="true" data-sortable="true">@Html.DisplayNameFor(model => model.Description)</th>
                 <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.OpeningDate)" data-sortable="true" data-formatter="dateFormatter">@Html.DisplayNameFor(model => model.OpeningDate)</th>
                 <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.Status)" data-sortable="true">@Html.DisplayNameFor(model => model.Status)</th>
-                <th data-halign="center" data-formatter="operateFormatter">Ação</th>
+                <th data-halign="center" data-cell-style="cellStyle" data-events="operationEvents" data-formatter="operateFormatter">Ação</th>
             </tr>
         </thead>
     </table>
@@ -57,9 +57,61 @@
             return formatedDate
         }
         function operateFormatter(value, row, index) {
-            var operations = '<p class="text-center"><a class="edit btn col-md-4 btn-primary" href="Bidding/Edit/?id=' + row.id + '" title="Editar">Editar</a>  ' +
-                '<a class="delete btn btn-danger col-md-4" href="javascript:void(0)" title="Desativar">Desativar</a></p>'
+            var operations = "";
+            if (row.isActive) {
+                operations = '<a class="edit btn col-md-4 btn-primary" href="Bidding/Edit/?id=' + row.id + '" title="Editar">Editar</a>  ' +
+                    '<a class="delete btn btn-danger col-md-4" data-status="' + row.isActive + '" data-target-url="Bidding/Deactivate/?id=' + row.id + '" href="javascript:void(0)" title="Desativar">Desativar</a>'
+            } else {
+                operations = '<a class="edit btn col-md-4 btn-primary" href="Bidding/Edit/?id=' + row.id + '" title="Editar">Editar</a>  ' +
+                    '<a class="delete btn btn-info col-md-4" data-status="' + row.isActive + '" data-target-url="Bidding/Reactivate/?id=' + row.id + '" href="javascript:void(0)" title="Reativar">Reativar</a>'
+            }
             return operations
+        }
+        var operationEvents = {
+            'click .delete': function (e, value, row, index) {
+                let mUrl = e.target.getAttribute('data-target-url');
+                $.ajax({
+                    url: mUrl,
+                    method: 'POST',
+                }).done(function (response) {
+                    console.log(response);
+                    if (response.buttonLabels) {
+                        ChangeButton(e.target, response.buttonLabels);
+                        toastr.options = { "closeButton": true }
+                        toastr.success(response.message);
+                    }
+                }).fail(function (response) {
+                    console.log("teste")
+                    console.log(response)
+                    toastr.options = {
+                        "closeButton": true,
+                        "showDuration": "5000",
+                        "hideDuration": "2000",
+                        "timeOut": "0",
+                        "extendedTimeOut": "0"
+                    };
+                    if (response.responseJSON.Message == undefined)
+                        response.responseJSON.Message = "Falha ao conectar com o servidor.";
+                    toastr.error(response.responseJSON.message);
+                })
+            }
+        }
+        function ChangeButton(button, labels) {
+            let status = button.getAttribute("data-status");
+            if (status == "true") {
+                button.classList.remove("btn-danger");
+                button.classList.add("btn-info");
+                button.setAttribute("title", labels.reactivate);
+                button.innerHTML = labels.reactivate;
+                button.setAttribute("data-status", "false");
+            } else {
+                button.classList.remove("btn-info");
+                button.classList.add("btn-danger");
+                button.setAttribute("title", labels.deactivate);
+                button.innerHTML = labels.deactivate;
+                button.setAttribute("data-status", "true");
+            }
+            button.setAttribute("data-target-url", labels.url);
         }
         function cellStyle(value, row, index) {
             return {
