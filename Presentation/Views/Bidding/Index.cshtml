@@ -1,0 +1,68 @@
+﻿@using Domain.DTOs
+@model BiddingDTO
+
+@{
+    ViewData["Title"] = "Index";
+}
+@section Head {
+    <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css" rel="stylesheet">
+}
+<div class="container mt-5">
+    <center><h2>Lista de Licitações</h2></center>
+    <table id="table"
+           data-locale="pt-BR"
+           data-toggle="table"
+           data-search="true"
+           data-pagination="true"
+           data-side-pagination="server"
+           data-query-params="queryParams"
+           data-search-highlight="true"
+           data-classes="table table-bordered table-striped table-hover"
+           data-page-list="[3, 5, 10, 20, 30]"
+           data-page-size="3"
+           data-url="@Url.Action("GetBiddings", "Bidding")">
+        <thead>
+            <tr>
+                <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.Number)" data-searchable="true" data-sortable="true">@Html.DisplayNameFor(model => model.Number)</th>
+                <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.Description)" data-searchable="true" data-sortable="true">@Html.DisplayNameFor(model => model.Description)</th>
+                <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.OpeningDate)" data-sortable="true" data-formatter="dateFormatter">@Html.DisplayNameFor(model => model.OpeningDate)</th>
+                <th data-halign="center" data-cell-style="cellStyle" data-field="@nameof(Model.Status)" data-sortable="true">@Html.DisplayNameFor(model => model.Status)</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+@section Scripts {
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+    <script src="~/js/bootstrap-table-pt-BR.js" asp-append-version="true"></script>
+    <script>
+        function queryParams(params) {
+            params.skip = params.offset
+            params.take = params.limit
+            params.sortColumn = params.sort
+            params.sortDirection = params.order
+            params.Paginated = true
+            delete params.sort
+            delete params.order
+            delete params.offset
+            delete params.limit
+            return params
+        }
+
+        function dateFormatter(value, row) {
+            const dateString = value;
+            const date = new Date(dateString);
+
+            const dateFormated = date.toLocaleDateString('pt-BR');
+            const timeFormated = date.toLocaleTimeString('pt-BR');
+            const dateTimeFormated = `${dateFormated} - ${timeFormated}`
+            console.log(dateTimeFormated)
+            return dateTimeFormated
+        }
+
+        function cellStyle(value, row, index) {
+            return {
+                classes: 'text-center'
+            }
+        }
+    </script>
+}

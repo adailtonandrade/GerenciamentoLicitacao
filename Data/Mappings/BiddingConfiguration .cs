@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Domain.Enum;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Mappings
