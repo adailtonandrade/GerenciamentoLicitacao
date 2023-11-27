@@ -6,9 +6,6 @@ namespace Application.Interfaces
     {
         IEnumerable<T> GetAll();
         T GetById(int id);
-        IEnumerable<T> Get(Expression<Func<T, bool>>? filter = null,
-        Expression<Func<IQueryable<T>, IOrderedQueryable<T>>>? orderBy = null,
-        string includeProperties = "");
         List<string> Insert(T obj);
         List<string> Update(T obj);
         List<string> Delete(int id);

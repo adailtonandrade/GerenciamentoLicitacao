@@ -1,4 +1,6 @@
-﻿using Application.Mapper;
+﻿using Application;
+using Application.Interfaces;
+using Application.Mapper;
 using AutoMapper.Extensions.ExpressionMapping;
 using Data;
 using Data.Context;
@@ -26,12 +28,18 @@ namespace CrossCutting.IoC
             services.AddAutoMapper(cfg => { cfg.AddExpressionMapping(); }, typeof(MappingProfile));
             #endregion
 
+            #region AppService
+            services.AddScoped<IBiddingAppService, BiddingAppService>();
+            #endregion
+
             #region Service
             services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
+            services.AddScoped<IBiddingService, BiddingService>();
             #endregion
 
             #region repository
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
+            services.AddScoped<IBiddingRepository, BiddingRepository>();
             #endregion repository
         }
     }
